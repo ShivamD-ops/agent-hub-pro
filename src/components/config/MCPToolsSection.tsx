@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Plug } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
+import "./ConfigSection.css";
 
 interface MCPTool {
   id: string;
@@ -22,21 +23,18 @@ const MCPToolsSection = () => {
   };
 
   return (
-    <div className="bg-card rounded-lg border border-border shadow-sm">
-      <div className="px-4 py-3 border-b border-border">
-        <h3 className="font-medium text-foreground">MCP Tools</h3>
+    <div className="config-section">
+      <div className="config-section-header">
+        <h3 className="config-section-title">MCP Tools</h3>
       </div>
-      <ScrollArea className="h-40">
-        <div className="p-4 space-y-3">
+      <ScrollArea className="config-section-content">
+        <div className="config-section-inner">
           {tools.map((tool) => (
-            <div
-              key={tool.id}
-              className="flex items-center gap-3 p-3 bg-secondary rounded-md"
-            >
-              <Plug className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-secondary-foreground">{tool.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{tool.description}</p>
+            <div key={tool.id} className="mcp-tool-item">
+              <Plug className="mcp-tool-icon" />
+              <div className="mcp-tool-info">
+                <p className="mcp-tool-name">{tool.name}</p>
+                <p className="mcp-tool-description">{tool.description}</p>
               </div>
               <Switch
                 checked={tool.connected}

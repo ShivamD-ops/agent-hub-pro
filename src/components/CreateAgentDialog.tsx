@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import "./CreateAgentDialog.css";
 
 interface CreateAgentDialogProps {
   open: boolean;
@@ -50,9 +51,9 @@ const CreateAgentDialog = ({ open, onOpenChange, onAgentCreated }: CreateAgentDi
         <DialogHeader>
           <DialogTitle>Create New Agent</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Agent Name</Label>
+        <div className="create-agent-form">
+          <div className="create-agent-field">
+            <Label htmlFor="name" className="create-agent-label">Agent Name</Label>
             <Input
               id="name"
               value={name}
@@ -60,8 +61,8 @@ const CreateAgentDialog = ({ open, onOpenChange, onAgentCreated }: CreateAgentDi
               placeholder="Enter agent name..."
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+          <div className="create-agent-field">
+            <Label htmlFor="description" className="create-agent-label">Description</Label>
             <Textarea
               id="description"
               value={description}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, Plus } from "lucide-react";
+import { ArrowLeft, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,6 +8,7 @@ import PromptsSection from "@/components/config/PromptsSection";
 import FilesSection from "@/components/config/FilesSection";
 import MCPToolsSection from "@/components/config/MCPToolsSection";
 import CustomMCPSection from "@/components/config/CustomMCPSection";
+import "./AgentConfig.css";
 
 interface Message {
   role: "user" | "assistant";
@@ -41,75 +42,64 @@ const AgentConfig = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-6 py-4 flex items-center gap-4">
+    <div className="agent-config-page">
+      <header className="agent-config-header">
+        <div className="container agent-config-header-content">
           <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-xl font-semibold text-foreground">Agent Configuration</h1>
-            <p className="text-sm text-muted-foreground">Configure and test your agent</p>
+            <h1 className="agent-config-title">Agent Configuration</h1>
+            <p className="agent-config-subtitle">Configure and test your agent</p>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-6">
-        <div className="flex gap-6 h-[calc(100vh-180px)]">
+      <div className="container agent-config-main">
+        <div className="agent-config-layout">
           {/* Left side - Chat & Output (70%) */}
-          <div className="flex-[7] flex flex-col gap-4">
+          <div className="agent-config-left">
             {/* Chat Box */}
-            <div className="flex-1 bg-card rounded-lg border border-border shadow-sm flex flex-col">
-              <div className="px-4 py-3 border-b border-border">
-                <h2 className="font-medium text-foreground">Chat with Agent</h2>
+            <div className="chat-box">
+              <div className="chat-box-header">
+                <h2 className="chat-box-title">Chat with Agent</h2>
               </div>
-              <ScrollArea className="flex-1 p-4">
-                <div className="space-y-4">
+              <ScrollArea className="chat-box-messages">
+                <div className="chat-messages-container">
                   {messages.map((msg, idx) => (
                     <div
                       key={idx}
-                      className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                      className={`chat-message ${msg.role}`}
                     >
-                      <div
-                        className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                          msg.role === "user"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-secondary text-secondary-foreground"
-                        }`}
-                      >
+                      <div className={`chat-message-bubble ${msg.role}`}>
                         {msg.content}
                       </div>
                     </div>
                   ))}
                 </div>
               </ScrollArea>
-              <div className="p-4 border-t border-border">
-                <div className="flex gap-2">
-                  <Input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                    placeholder="Type your message..."
-                    className="flex-1"
-                  />
-                  <Button onClick={handleSend} size="icon">
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
+              <div className="chat-box-input-container">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                  placeholder="Type your message..."
+                />
+                <Button onClick={handleSend} size="icon">
+                  <Send className="h-4 w-4" />
+                </Button>
               </div>
             </div>
 
             {/* Sample Output */}
-            <div className="h-32 bg-card rounded-lg border border-border shadow-sm p-4">
-              <h3 className="text-sm font-medium text-foreground mb-2">Sample Output</h3>
-              <pre className="text-xs text-muted-foreground font-mono whitespace-pre-wrap">
-                {sampleOutput}
-              </pre>
+            <div className="sample-output">
+              <h3 className="sample-output-title">Sample Output</h3>
+              <pre className="sample-output-content">{sampleOutput}</pre>
             </div>
           </div>
 
           {/* Right side - Configuration (30%) */}
-          <div className="flex-[3] space-y-4">
+          <div className="agent-config-right">
             <PromptsSection />
             <FilesSection />
             <MCPToolsSection />

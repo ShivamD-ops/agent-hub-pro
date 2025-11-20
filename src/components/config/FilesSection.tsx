@@ -3,6 +3,7 @@ import { Upload, File, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
+import "./ConfigSection.css";
 
 interface FileItem {
   id: string;
@@ -25,33 +26,29 @@ const FilesSection = () => {
   };
 
   return (
-    <div className="bg-card rounded-lg border border-border shadow-sm">
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        <h3 className="font-medium text-foreground">Files</h3>
+    <div className="config-section">
+      <div className="config-section-header">
+        <h3 className="config-section-title">Files</h3>
         <Button size="icon" variant="ghost">
           <Upload className="h-4 w-4" />
         </Button>
       </div>
-      <ScrollArea className="h-40">
-        <div className="p-4 space-y-2">
+      <ScrollArea className="config-section-content">
+        <div className="config-section-inner">
           {files.map((file) => (
-            <div
-              key={file.id}
-              className="p-3 bg-secondary rounded-md flex items-center gap-3 group"
-            >
+            <div key={file.id} className="file-item">
               <Checkbox
                 checked={file.selected}
                 onCheckedChange={() => handleToggle(file.id)}
               />
-              <File className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <span className="flex-1 text-sm text-secondary-foreground truncate">
-                {file.name}
-              </span>
+              <File className="file-item-icon" />
+              <span className="file-item-name">{file.name}</span>
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="file-item-remove"
                 onClick={() => handleRemove(file.id)}
+                style={{ height: '1.5rem', width: '1.5rem' }}
               >
                 <X className="h-3 w-3" />
               </Button>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AgentCard from "@/components/AgentCard";
 import CreateAgentDialog from "@/components/CreateAgentDialog";
+import "./Index.css";
 
 interface Agent {
   id: string;
@@ -30,40 +31,40 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-6 py-6">
-          <div className="flex items-center justify-between mb-6">
+    <div className="index-page">
+      <header className="index-header">
+        <div className="container index-header-content">
+          <div className="index-header-top">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Agent Platform</h1>
-              <p className="text-muted-foreground mt-1">Manage and configure your AI agents</p>
+              <h1 className="index-title">Agent Platform</h1>
+              <p className="index-subtitle">Manage and configure your AI agents</p>
             </div>
-            <Button onClick={() => setShowCreateDialog(true)} className="gap-2">
-              <Plus className="h-4 w-4" />
+            <Button onClick={() => setShowCreateDialog(true)}>
+              <Plus className="h-4 w-4" style={{ marginRight: '0.5rem' }} />
               Create Agent
             </Button>
           </div>
-          <div className="relative max-w-xl">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="index-search-container">
+            <Search className="index-search-icon" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search agents..."
-              className="pl-10"
+              style={{ paddingLeft: '2.5rem' }}
             />
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <main className="container index-main">
+        <div className="index-agents-grid">
           {filteredAgents.map((agent) => (
             <AgentCard key={agent.id} {...agent} />
           ))}
         </div>
         {filteredAgents.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-muted-foreground">No agents found matching your search.</p>
+          <div className="index-empty-state">
+            <p className="index-empty-text">No agents found matching your search.</p>
           </div>
         )}
       </main>

@@ -1,6 +1,6 @@
 import { Bot } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import "./AgentCard.css";
 
 interface AgentCardProps {
   id: string;
@@ -12,20 +12,20 @@ const AgentCard = ({ id, name, description }: AgentCardProps) => {
   const navigate = useNavigate();
 
   return (
-    <Card
+    <div
       onClick={() => navigate(`/agent/${id}`)}
-      className="p-6 cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] border-border bg-card"
+      className="agent-card"
     >
-      <div className="flex items-start gap-4">
-        <div className="p-3 rounded-lg bg-accent">
-          <Bot className="h-6 w-6 text-accent-foreground" />
+      <div className="agent-card-content">
+        <div className="agent-card-icon">
+          <Bot />
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-foreground mb-1 truncate">{name}</h3>
-          <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
+        <div className="agent-card-info">
+          <h3 className="agent-card-name">{name}</h3>
+          <p className="agent-card-description">{description}</p>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 

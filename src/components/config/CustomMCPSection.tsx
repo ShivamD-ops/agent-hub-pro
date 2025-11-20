@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import "./ConfigSection.css";
 
 interface CustomTool {
   id: string;
@@ -30,29 +30,26 @@ const CustomMCPSection = () => {
 
   return (
     <>
-      <div className="bg-card rounded-lg border border-border shadow-sm">
-        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-          <h3 className="font-medium text-foreground">Custom MCP Tools</h3>
+      <div className="config-section">
+        <div className="config-section-header">
+          <h3 className="config-section-title">Custom MCP Tools</h3>
           <Button size="icon" variant="ghost" onClick={() => setShowDialog(true)}>
             <Plus className="h-4 w-4" />
           </Button>
         </div>
-        <ScrollArea className="h-32">
-          <div className="p-4 space-y-2">
+        <ScrollArea className="config-section-content short">
+          <div className="config-section-inner">
             {tools.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-6">
+              <p className="config-empty-state">
                 No custom tools yet. Click + to create one.
               </p>
             ) : (
               tools.map((tool) => (
-                <div
-                  key={tool.id}
-                  className="p-3 bg-secondary rounded-md flex items-start gap-3"
-                >
-                  <Code className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-secondary-foreground">{tool.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{tool.endpoint}</p>
+                <div key={tool.id} className="custom-tool-item">
+                  <Code className="custom-tool-icon" />
+                  <div className="custom-tool-info">
+                    <p className="custom-tool-name">{tool.name}</p>
+                    <p className="custom-tool-endpoint">{tool.endpoint}</p>
                   </div>
                 </div>
               ))
@@ -66,9 +63,9 @@ const CustomMCPSection = () => {
           <DialogHeader>
             <DialogTitle>Create Custom MCP Tool</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="tool-name">Tool Name</Label>
+          <div className="dialog-form">
+            <div className="dialog-field">
+              <Label htmlFor="tool-name" className="dialog-label">Tool Name</Label>
               <Input
                 id="tool-name"
                 value={name}
@@ -76,8 +73,8 @@ const CustomMCPSection = () => {
                 placeholder="My Custom Tool"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="endpoint">API Endpoint</Label>
+            <div className="dialog-field">
+              <Label htmlFor="endpoint" className="dialog-label">API Endpoint</Label>
               <Input
                 id="endpoint"
                 value={endpoint}

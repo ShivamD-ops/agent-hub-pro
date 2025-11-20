@@ -1,0 +1,19 @@
+.create-agent-form {
+  padding: 1rem 0;
+}
+
+.create-agent-field {
+  margin-bottom: 1rem;
+}
+
+.create-agent-field:last-child {
+  margin-bottom: 0;
+}
+
+.create-agent-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--color-foreground);
+}

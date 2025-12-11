@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, FileText, FolderOpen, Wrench, Plus, Trash2, Rocket } from "lucide-react";
+import { ArrowLeft, Send, FileText, FolderOpen, Wrench, Plus, Trash2, Rocket, PanelLeftClose, PanelLeft, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,7 +16,7 @@ interface Message {
   content: string;
 }
 
-type SettingsTab = "prompts" | "files" | "mcp" | "custom";
+type SettingsTab = "prompts" | "files" | "mcp" | "custom" | "all";
 
 const AgentConfig = () => {
   const { id } = useParams();
@@ -27,6 +27,7 @@ const AgentConfig = () => {
   const [input, setInput] = useState("");
   const [sampleOutput, setSampleOutput] = useState("Sample output will appear here after processing...");
   const [activeTab, setActiveTab] = useState<SettingsTab>("prompts");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -56,6 +57,7 @@ const AgentConfig = () => {
   };
 
   const tabs = [
+    { id: "all" as SettingsTab, icon: LayoutGrid, label: "All Settings" },
     { id: "prompts" as SettingsTab, icon: FileText, label: "Prompts" },
     { id: "files" as SettingsTab, icon: FolderOpen, label: "Files" },
     { id: "mcp" as SettingsTab, icon: Wrench, label: "MCP Tools" },
@@ -63,6 +65,16 @@ const AgentConfig = () => {
   ];
 
   const renderSettingsContent = () => {
+    if (activeTab === "all") {
+      return (
+        <div className="all-settings-grid">
+          <PromptsSection />
+          <FilesSection />
+          <MCPToolsSection />
+          <CustomMCPSection />
+        </div>
+      );
+    }
     switch (activeTab) {
       case "prompts":
         return <PromptsSection />;
@@ -74,6 +86,8 @@ const AgentConfig = () => {
         return <CustomMCPSection />;
     }
   };
+
+  const showChat = activeTab !== "all";
 
   return (
     <div className="agent-config-page">
@@ -102,7 +116,17 @@ const AgentConfig = () => {
       <div className="agent-config-main">
         <div className="agent-config-layout">
           {/* Left Sidebar - Settings */}
-          <div className="agent-config-sidebar">
+          <div className={`agent-config-sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
+            <div className="sidebar-header">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="sidebar-toggle"
+              >
+                {sidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+              </Button>
+            </div>
             <div className="sidebar-tabs">
               {tabs.map((tab) => (
                 <button
@@ -112,53 +136,57 @@ const AgentConfig = () => {
                   title={tab.label}
                 >
                   <tab.icon className="sidebar-tab-icon" />
-                  <span className="sidebar-tab-label">{tab.label}</span>
+                  {!sidebarCollapsed && <span className="sidebar-tab-label">{tab.label}</span>}
                 </button>
               ))}
             </div>
-            <ScrollArea className="sidebar-content">
-              {renderSettingsContent()}
-            </ScrollArea>
-          </div>
-
-          {/* Main Content - Chat */}
-          <div className="agent-config-content">
-            <div className="chat-box">
-              <div className="chat-box-header">
-                <h2 className="chat-box-title">Chat with Agent</h2>
-              </div>
-              <ScrollArea className="chat-box-messages">
-                <div className="chat-messages-container">
-                  {messages.map((msg, idx) => (
-                    <div
-                      key={idx}
-                      className={`chat-message ${msg.role}`}
-                    >
-                      <div className={`chat-message-bubble ${msg.role}`}>
-                        {msg.content}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            {!sidebarCollapsed && (
+              <ScrollArea className="sidebar-content">
+                {renderSettingsContent()}
               </ScrollArea>
-              <div className="chat-box-input-container">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  placeholder="Type your message..."
-                />
-                <Button onClick={handleSend} size="icon">
-                  <Send className="h-4 w-4" />
-                </Button>
+            )}
+          </div>
+
+          {/* Main Content - Chat (hidden when "All Settings" is active) */}
+          {showChat && (
+            <div className="agent-config-content">
+              <div className="chat-box">
+                <div className="chat-box-header">
+                  <h2 className="chat-box-title">Chat with Agent</h2>
+                </div>
+                <ScrollArea className="chat-box-messages">
+                  <div className="chat-messages-container">
+                    {messages.map((msg, idx) => (
+                      <div
+                        key={idx}
+                        className={`chat-message ${msg.role}`}
+                      >
+                        <div className={`chat-message-bubble ${msg.role}`}>
+                          {msg.content}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+                <div className="chat-box-input-container">
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                    placeholder="Type your message..."
+                  />
+                  <Button onClick={handleSend} size="icon">
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="sample-output">
+                <h3 className="sample-output-title">Sample Output</h3>
+                <pre className="sample-output-content">{sampleOutput}</pre>
               </div>
             </div>
-
-            <div className="sample-output">
-              <h3 className="sample-output-title">Sample Output</h3>
-              <pre className="sample-output-content">{sampleOutput}</pre>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

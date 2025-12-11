@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, FileText, FolderOpen, Wrench, Plus, Trash2, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,12 +8,15 @@ import PromptsSection from "@/components/config/PromptsSection";
 import FilesSection from "@/components/config/FilesSection";
 import MCPToolsSection from "@/components/config/MCPToolsSection";
 import CustomMCPSection from "@/components/config/CustomMCPSection";
+import { toast } from "sonner";
 import "./AgentConfig.css";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
+
+type SettingsTab = "prompts" | "files" | "mcp" | "custom";
 
 const AgentConfig = () => {
   const { id } = useParams();
@@ -23,6 +26,7 @@ const AgentConfig = () => {
   ]);
   const [input, setInput] = useState("");
   const [sampleOutput, setSampleOutput] = useState("Sample output will appear here after processing...");
+  const [activeTab, setActiveTab] = useState<SettingsTab>("prompts");
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -31,7 +35,6 @@ const AgentConfig = () => {
     setMessages(prev => [...prev, newMessage]);
     setInput("");
     
-    // Simulate response
     setTimeout(() => {
       setMessages(prev => [...prev, { 
         role: "assistant", 
@@ -41,6 +44,37 @@ const AgentConfig = () => {
     }, 500);
   };
 
+  const handlePublish = () => {
+    toast.success("Agent published successfully!");
+  };
+
+  const handleDelete = () => {
+    if (confirm("Are you sure you want to delete this agent?")) {
+      toast.success("Agent deleted");
+      navigate("/");
+    }
+  };
+
+  const tabs = [
+    { id: "prompts" as SettingsTab, icon: FileText, label: "Prompts" },
+    { id: "files" as SettingsTab, icon: FolderOpen, label: "Files" },
+    { id: "mcp" as SettingsTab, icon: Wrench, label: "MCP Tools" },
+    { id: "custom" as SettingsTab, icon: Plus, label: "Custom MCP" },
+  ];
+
+  const renderSettingsContent = () => {
+    switch (activeTab) {
+      case "prompts":
+        return <PromptsSection />;
+      case "files":
+        return <FilesSection />;
+      case "mcp":
+        return <MCPToolsSection />;
+      case "custom":
+        return <CustomMCPSection />;
+    }
+  };
+
   return (
     <div className="agent-config-page">
       <header className="agent-config-header">
@@ -48,18 +82,47 @@ const AgentConfig = () => {
           <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div>
+          <div className="header-title-section">
             <h1 className="agent-config-title">Agent Configuration</h1>
             <p className="agent-config-subtitle">Configure and test your agent</p>
+          </div>
+          <div className="header-actions">
+            <Button variant="destructive" size="sm" onClick={handleDelete}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </Button>
+            <Button onClick={handlePublish}>
+              <Rocket className="h-4 w-4 mr-2" />
+              Publish
+            </Button>
           </div>
         </div>
       </header>
 
-      <div className="container agent-config-main">
+      <div className="agent-config-main">
         <div className="agent-config-layout">
-          {/* Left side - Chat & Output (70%) */}
-          <div className="agent-config-left">
-            {/* Chat Box */}
+          {/* Left Sidebar - Settings */}
+          <div className="agent-config-sidebar">
+            <div className="sidebar-tabs">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`sidebar-tab ${activeTab === tab.id ? "active" : ""}`}
+                  onClick={() => setActiveTab(tab.id)}
+                  title={tab.label}
+                >
+                  <tab.icon className="sidebar-tab-icon" />
+                  <span className="sidebar-tab-label">{tab.label}</span>
+                </button>
+              ))}
+            </div>
+            <ScrollArea className="sidebar-content">
+              {renderSettingsContent()}
+            </ScrollArea>
+          </div>
+
+          {/* Main Content - Chat */}
+          <div className="agent-config-content">
             <div className="chat-box">
               <div className="chat-box-header">
                 <h2 className="chat-box-title">Chat with Agent</h2>
@@ -91,19 +154,10 @@ const AgentConfig = () => {
               </div>
             </div>
 
-            {/* Sample Output */}
             <div className="sample-output">
               <h3 className="sample-output-title">Sample Output</h3>
               <pre className="sample-output-content">{sampleOutput}</pre>
             </div>
-          </div>
-
-          {/* Right side - Configuration (30%) */}
-          <div className="agent-config-right">
-            <PromptsSection />
-            <FilesSection />
-            <MCPToolsSection />
-            <CustomMCPSection />
           </div>
         </div>
       </div>

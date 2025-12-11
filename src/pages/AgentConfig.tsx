@@ -64,17 +64,8 @@ const AgentConfig = () => {
     { id: "custom" as SettingsTab, icon: Plus, label: "Custom MCP" },
   ];
 
-  const renderSettingsContent = () => {
-    if (activeTab === "all") {
-      return (
-        <div className="all-settings-grid">
-          <PromptsSection />
-          <FilesSection />
-          <MCPToolsSection />
-          <CustomMCPSection />
-        </div>
-      );
-    }
+  const renderSidebarContent = () => {
+    if (activeTab === "all") return null;
     switch (activeTab) {
       case "prompts":
         return <PromptsSection />;
@@ -87,7 +78,6 @@ const AgentConfig = () => {
     }
   };
 
-  const showChat = activeTab !== "all";
 
   return (
     <div className="agent-config-page">
@@ -140,53 +130,64 @@ const AgentConfig = () => {
                 </button>
               ))}
             </div>
-            {!sidebarCollapsed && (
+            {!sidebarCollapsed && activeTab !== "all" && (
               <ScrollArea className="sidebar-content">
-                {renderSettingsContent()}
+                {renderSidebarContent()}
               </ScrollArea>
             )}
           </div>
 
-          {/* Main Content - Chat (hidden when "All Settings" is active) */}
-          {showChat && (
-            <div className="agent-config-content">
-              <div className="chat-box">
-                <div className="chat-box-header">
-                  <h2 className="chat-box-title">Chat with Agent</h2>
+          {/* Main Content */}
+          <div className="agent-config-content">
+            {activeTab === "all" ? (
+              <ScrollArea className="all-settings-container">
+                <div className="all-settings-grid">
+                  <PromptsSection />
+                  <FilesSection />
+                  <MCPToolsSection />
+                  <CustomMCPSection />
                 </div>
-                <ScrollArea className="chat-box-messages">
-                  <div className="chat-messages-container">
-                    {messages.map((msg, idx) => (
-                      <div
-                        key={idx}
-                        className={`chat-message ${msg.role}`}
-                      >
-                        <div className={`chat-message-bubble ${msg.role}`}>
-                          {msg.content}
-                        </div>
-                      </div>
-                    ))}
+              </ScrollArea>
+            ) : (
+              <>
+                <div className="chat-box">
+                  <div className="chat-box-header">
+                    <h2 className="chat-box-title">Chat with Agent</h2>
                   </div>
-                </ScrollArea>
-                <div className="chat-box-input-container">
-                  <Input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                    placeholder="Type your message..."
-                  />
-                  <Button onClick={handleSend} size="icon">
-                    <Send className="h-4 w-4" />
-                  </Button>
+                  <ScrollArea className="chat-box-messages">
+                    <div className="chat-messages-container">
+                      {messages.map((msg, idx) => (
+                        <div
+                          key={idx}
+                          className={`chat-message ${msg.role}`}
+                        >
+                          <div className={`chat-message-bubble ${msg.role}`}>
+                            {msg.content}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                  <div className="chat-box-input-container">
+                    <Input
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                      placeholder="Type your message..."
+                    />
+                    <Button onClick={handleSend} size="icon">
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="sample-output">
-                <h3 className="sample-output-title">Sample Output</h3>
-                <pre className="sample-output-content">{sampleOutput}</pre>
-              </div>
-            </div>
-          )}
+                <div className="sample-output">
+                  <h3 className="sample-output-title">Sample Output</h3>
+                  <pre className="sample-output-content">{sampleOutput}</pre>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

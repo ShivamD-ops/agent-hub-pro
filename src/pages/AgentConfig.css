@@ -47,11 +47,27 @@
 
 /* Sidebar */
 .agent-config-sidebar {
-  width: 280px;
+  width: 320px;
   background-color: var(--color-card);
   border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
+  transition: width 0.3s ease;
+}
+
+.agent-config-sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar-header {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sidebar-toggle {
+  flex-shrink: 0;
 }
 
 .sidebar-tabs {
@@ -75,6 +91,12 @@
   color: var(--color-muted-foreground);
   font-size: 0.875rem;
   text-align: left;
+  white-space: nowrap;
+}
+
+.agent-config-sidebar.collapsed .sidebar-tab {
+  justify-content: center;
+  padding: 0.75rem;
 }
 
 .sidebar-tab:hover {
@@ -101,6 +123,13 @@
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
+}
+
+/* All Settings Grid */
+.all-settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 /* Main Content */
